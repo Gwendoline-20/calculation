@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <table border="1">
+        <tr>
+            <td colspan="4">
+                <input type="text" id="inputBox" value="0" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td onclick="digitBtnPressed(7)">7</td>
+            <td onclick="digitBtnPressed(8)">8</td>
+            <td onclick="digitBtnPressed(9)">9</td>
+            <td onclick="operatorBtnPressed('*')">*</td>
+        </tr>
+        <tr>
+            <td onclick="digitBtnPressed(4)">4</td>
+            <td onclick="digitBtnPressed(5)">5</td>
+            <td onclick="digitBtnPressed(6)">6</td>
+            <td onclick="operatorBtnPressed('-')">-</td>
+        </tr>
+        <tr>
+            <td onclick="digitBtnPressed(1)">1</td>
+            <td onclick="digitBtnPressed(2)">2</td>
+            <td onclick="digitBtnPressed(3)">3</td>
+            <td onclick="operatorBtnPressed('+')">+</td>
+        </tr>
+        <tr>
+            <td colspan="2" onclick="digitBtnPressed(0)">0</td>
+            <td onclick="btnACPressed()">AC</td>
+            <td onclick="operatorBtnPressed('/')">/</td>
+        </tr>
+        <tr>
+            <td onclick="percentPressed()">%</td>
+            <td onclick="decimalBtnPressed()">.</td> 
+            <td onclick="operatorBtnPressed('^')">^</td>
+            <td onclick="togglePower()">ON/OFF</td>
+        </tr>
+        <tr>
+            <td colspan="4" onclick="equalsBtnPressed()">=</td>
+        </tr>
+    </table>
+
+    <script>
+        let newLine = true;
+        let value1 = null;
+        let currentOperator = null;
+        let isOn = true;
+
+        function digitBtnPressed(button) {
+            if (!isOn) return;
+            const inputBox = document.getElementById("inputBox");
+            if (newLine || inputBox.value === "0") {
+                inputBox.value = button;
+                newLine = false;
+            } else {
+                inputBox.value += button;
+            }
+        }
+
+        function btnACPressed() {
+            if (!isOn) return;
+            document.getElementById("inputBox").value = 0;
+            newLine = true;
+            value1 = null;
+            currentOperator = null;
+        }
+
+        function operatorBtnPressed(operator) {
+            if (!isOn) return;
+            value1 = parseFloat(document.getElementById("inputBox").value);
+            currentOperator = operator;
+            newLine = true;
+        }
+
+        function equalsBtnPressed() {
+            if (!isOn || value1 === null || !currentOperator) return;
+
+            let value2 = parseFloat(document.getElementById("inputBox").value);
+            let result = 0;
+
+            switch (currentOperator) {
+                case "+":
+                    result = value1 + value2;
+                    break;
+                case "-":
+                    result = value1 - value2;
+                    break;
+                case "*":
+                    result = value1 * value2;
+                    break;
+                case "/":
+                    result = value2 === 0 ? "Error" : value1 / value2;
+                    break;
+                case "%":
+                    result = value1 % value2;
+                    break;
+                case "^":
+                    result = Math.pow(value1, value2);
+                    break;
+                default:
+                    result = value2;
+            }
+
+            document.getElementById("inputBox").value = result;
+            value1 = null;
+            currentOperator = null;
+            newLine = true;
+        }
+
+        function percentPressed() {
+            if (!isOn) return;
+            let currentValue = parseFloat(document.getElementById("inputBox").value);
+            document.getElementById("inputBox").value = currentValue / 100;
+            newLine = true;
+        }
+
+        function decimalBtnPressed() {
+            if (!isOn) return;
+            let inputBox = document.getElementById("inputBox");
+            if (!inputBox.value.includes(".")) {
+                inputBox.value += ".";
+                newLine = false;
+            }
+        }
+
+        function togglePower() {
+            const inputBox = document.getElementById("inputBox");
+            isOn = !isOn;
+
+            if (isOn) {
+                inputBox.value = "0";
+                inputBox.classList.remove("disabled");
+            } else {
+                inputBox.value = "";
+                inputBox.classList.add("disabled");
+                newLine = true;
+                value1 = null;
+                currentOperator = null;
+            }
+        }
+    </script>
+</body>
+</html>
